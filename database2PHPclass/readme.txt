@@ -1,0 +1,1 @@
+almost all functions use deprecated versions of the MySQL API, see ajax.showdatabases.php

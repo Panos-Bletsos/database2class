@@ -8,13 +8,16 @@
 <body>
 <?php
 
-	function getFKs($oLink)
+use ForeignKey\ForeignKey;
+use ForeignKey\ForeignKeyRepository;
+
+function getFKs($oLink)
 	{
 		$query = "SHOW TABLES FROM test_db_2_php;";
 		$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
 	
 		// Preprocessing: For each table find foreign keys
-		$FKs = new FKs();
+		$FKs = new ForeignKeyRepository();
 		
 		while($oRow = mysql_fetch_row($oResult))
 		{
@@ -36,7 +39,7 @@
 				//$FKs[stristr($tablesFKsRows->foreign_key, ".", true)][$tablesFKsRows->foreign_key] = $tablesFKsRows->references;
 				
 				//place all info in an object
-				$FK_object = new FK();			
+				$FK_object = new ForeignKey();
 				$source_parts = explode(".", $tablesFKsRows->foreign_key);
 				$dest_parts = explode(".", $tablesFKsRows->references);
 				
@@ -88,8 +91,8 @@
 	
 	$files_to_include = my_scan_dir("output/");
 
-	include_once ("class.database.php");
-	include_once ("settings.php");
+	include_once("Database.php");
+	include_once("Settings.php");
 	
 	$instances_array = array();
 	foreach ($files_to_include as $a_file_to_include)
@@ -103,9 +106,9 @@
 	}
 
 /*
-require_once("class.interrelationship.php");
-require_once("class.interrelationships.php");
-require_once("class.FK.php");
+require_once("Interrelationship.php");
+require_once("Interrelationships.php");
+require_once("ForeignKey.php");
 require_once("class.FKs.php");
 
 echo "<strong>initial test</strong><br/>";	

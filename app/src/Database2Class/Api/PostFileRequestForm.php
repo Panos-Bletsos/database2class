@@ -1,8 +1,16 @@
 <?php
+namespace Api;
+
 	/////////////////////////////////////////
-//	ini_set('display_errors', true);
-//	ini_set('html_errors', true);
-//	error_reporting(E_ALL);
+use Database2Class\Table;
+use ForeignKey\ForeignKey;
+use ForeignKey\ForeignKeyRepository;
+use Interrelationship\Interrelationship;
+use Interrelationship\InterrelationshipRepository;
+
+ini_set('display_errors', true);
+	ini_set('html_errors', true);
+	error_reporting(E_ALL);
 	/////////////////////////////////////////
 
 
@@ -25,9 +33,62 @@ function tablesAttributes($a_table)
 }
 */
 
+function return_result_db($query, $result_type = 'MYSQL_ASSOC', $type='mysql', $path_to_db_file = "")
+{
+	if (strcmp($type, 'mysql') === 0)
+	{
+		global $db_uri;
+		global $db_name;
+		global $db_user_username;
+		global $db_user_password;
+	
+		$db = new PDO('mysql:host='.$db_uri.';charset=utf8;dbname='.$db_name, $db_user_username, $db_user_password);
+	}
+	else
+	{
+		if (strcmp($path_to_db_file, "") === 0)
+			$db = new PDO('sqlite:XXXX/XXXX.sqlite');	//Change here for default value
+		else
+			$db = new PDO('sqlite:'.$path_to_db_file);	
+	}
+		
+	//$temp = $db->prepare($query);
+	//$execution_result = $temp->execute();
+	if (strcmp($result_type, 'MYSQL_ASSOC') === 0)
+		$result = $db->query($query, PDO::FETCH_ASSOC);
+	elseif (strcmp($result_type, 'MYSQL_NUM') === 0)
+		$result = $db->query($query, PDO::FETCH_NUM);
+	elseif (strcmp($result_type, 'MYSQL_BOTH') === 0)
+		$result = $db->query($query, PDO::FETCH_BOTH);
+	elseif (strcmp($result_type, 'MYSQL_OBJ') === 0)
+		$result = $db->query($query, PDO::FETCH_OBJ);
+	else
+		exit("Not recognised result_type");
+		
+	if ($result === false)
+	{
+		$the_error = $db->errorInfo();
+		exit("There was an error querying the db!<br />The query was: ".$query."<br />Error info: ".$the_error[2]);
+	}
+	else
+	{
+		$return_val = array();
+		
+		foreach($result as $row)
+		{
+			array_push($return_val, $row);
+		}
+		
+//		if (count($return_val) === 1)
+//			$return_val = $return_val[0];
+		
+		return $return_val;	
+	}		
+}
+
 function processFKs($PKs, $UKs, $FKs)
 {
-	$all_interrelationships = new Interrelationships();
+	$all_interrelationships = new InterrelationshipRepository();
 		
 	//Find cardinality cases
 	$allSourceTables = $FKs->getAllSourceTables();
@@ -43,7 +104,7 @@ function processFKs($PKs, $UKs, $FKs)
 		//foreach($a_tables_FKs as $source_FK => $dest_FK)
 		foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 		{
-			if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+			if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "includes" .$a_tables_FK->getsource_attribute()]) === true)
 				$noOfPKs++;
 		}
 		
@@ -59,20 +120,20 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{				
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "includes" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
 				
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 			}
 			
 			$temp_via_table_eq_args = substr($temp_via_table_eq_args,0, -5);
 			$an_interrelationship->setvia_table_eq_args($temp_via_table_eq_args);
 			
 			if (count($tables_used) > 2)
-				die ("[1] N-ary relationships with N>2 are not supported. Sorry :-( ");
+				die ("N-ary relationships with N>2 are not supported. Sorry :-(");
 			else
 			{
 				$values=array_values($tables_used);
@@ -125,16 +186,12 @@ function processFKs($PKs, $UKs, $FKs)
 			$an_interrelationship->setvia_table_eq_args($temp_via_table_eq_args);
 			
 			if (count($tables_used) > 2)
-				die ("[2] N-ary relationships with N>2 are not supported. Sorry :-(");
-			else if(count($tables_used) == 2)
+				die ("N-ary relationships with N>2 are not supported. Sorry :-(");
+			else
 			{
 				$values=array_values($tables_used);
 				$an_interrelationship->setsource_table($values[0]);
 				$an_interrelationship->setdest_table($values[1]);
-			}
-			else 
-			{
-				die ("Unexpected relationship! Aborting...");
 			}
 			
 			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
@@ -186,21 +243,21 @@ function processFKs($PKs, $UKs, $FKs)
 function getNonFKAttributes($FKs)
 {
 	$query = "SHOW TABLES FROM ".$_POST["database"].";";
-	$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
+	$oResult = return_result_db($query, 'MYSQL_NUM');
 	
 	$nonFKAttributes = array();
 		
 	// For each table
-	while($oRow = mysql_fetch_row($oResult))
+	foreach ($oResult as $oRow)
 	{
 		$nonFKAttributes[$oRow[0]] = array();
 		
 		// Finds the tables of the db
 		$queryAttributes = "SHOW COLUMNS FROM ".$oRow[0].";";
-		$tablesAttributes = mysql_query($queryAttributes) or die( mysql_error().".<br />\n The query string was: ".$queryPKs);
+		$tablesAttributes = return_result_db($queryAttributes, 'MYSQL_OBJ');
 		
 		// Collect table names
-		while($tablesAttributesRows = mysql_fetch_object($tablesAttributes)) 
+		foreach ($tablesAttributes as $tablesAttributesRows ) 
 		{
 			//if(isset($FKs[$oRow[0]][$oRow[0].".".$tablesAttributesRows->Field]) !== true)
 			if($FKs->existsSource($oRow[0], $tablesAttributesRows->Field) === false)
@@ -232,15 +289,16 @@ function prettyFormatDump($a_dump)
 	return $a_dump;
 }
 
-function getFKs($oLink)
+function getFKs()
 {
 	$query = "SHOW TABLES FROM ".$_POST["database"].";";
-	$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
+	$oResult = return_result_db($query, 'MYSQL_NUM');
 
 	// Preprocessing: For each table find foreign keys
-	$FKs = new FKs();
+	$FKs = new ForeignKeyRepository();
 	
-	while($oRow = mysql_fetch_row($oResult))
+	//while($oRow = mysql_fetch_row($oResult))
+	foreach ($oResult as $oRow)
 	{
 		$queryFKs = "SELECT DISTINCT
 		concat(table_name, '.', column_name) as 'foreign_key',  
@@ -249,18 +307,21 @@ function getFKs($oLink)
 		information_schema.key_column_usage
 	WHERE
 		referenced_table_name is not null
-		AND table_name = '".$oRow[0]."'";
+		AND table_name = '".$oRow[0]."';";
 		
-		$tablesFKs = mysql_query($queryFKs) or die( mysql_error().".<br />\n The query string was: ".$queryFKs);
+		//$tablesFKs = mysql_query($queryFKs) or die( mysql_error().".<br />\n The query string was: ".$queryFKs);
+		
+		$oResult2 = return_result_db($queryFKs, 'MYSQL_OBJ');
 		
 		// Collect table's FKs
-		while($tablesFKsRows = mysql_fetch_object($tablesFKs)) 
+		//while($tablesFKsRows = mysql_fetch_object($tablesFKs)) 
+		foreach ($oResult2 as $tablesFKsRows)
 		{
 			//Old array solution that was wrong!
 			//$FKs[stristr($tablesFKsRows->foreign_key, ".", true)][$tablesFKsRows->foreign_key] = $tablesFKsRows->references;
 			
 			//place all info in an object
-			$FK_object = new FK();			
+			$FK_object = new ForeignKey();
 			$source_parts = explode(".", $tablesFKsRows->foreign_key);
 			$dest_parts = explode(".", $tablesFKsRows->references);
 			
@@ -276,10 +337,10 @@ function getFKs($oLink)
 	return $FKs;
 }
 
-function getPKsUKsAIs($oLink, &$primary_keys, &$unique_keys, &$auto_increment_attributes)
+function getPKsUKsAIs(&$primary_keys, &$unique_keys, &$auto_increment_attributes)
 {
 	$query = "SHOW TABLES FROM ".$_POST["database"].";";
-	$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
+	$oResult = return_result_db($query, 'MYSQL_NUM');
 	
 	//Get tables' primary keys
 	$primary_keys = array();
@@ -291,7 +352,7 @@ function getPKsUKsAIs($oLink, &$primary_keys, &$unique_keys, &$auto_increment_at
 	$auto_increment_attributes = array();
 	
 	// For each table
-	while($oRow = mysql_fetch_row($oResult))
+	foreach($oResult as $oRow)
 	{
 		$primary_keys[$oRow[0]] = array();
 		$unique_keys[$oRow[0]] = array();
@@ -299,10 +360,13 @@ function getPKsUKsAIs($oLink, &$primary_keys, &$unique_keys, &$auto_increment_at
 		
 		// Finds the tables of the db
 		$queryPKs = "SHOW COLUMNS FROM ".$oRow[0].";";
-		$tablesPKs = mysql_query($queryPKs) or die( mysql_error().".<br />\n The query string was: ".$queryPKs);
+		$oResult2 = return_result_db($queryPKs, 'MYSQL_OBJ');
+		//$tablesPKs = mysql_query($queryPKs) or die( mysql_error().".<br />\n The query string was: ".$queryPKs);
+		
 		
 		// Collect table names
-		while($tablesPKsRows = mysql_fetch_object($tablesPKs)) 
+		//while($tablesPKsRows = mysql_fetch_object($tablesPKs)) 
+		foreach ($oResult2 as $tablesPKsRows)
 		{
 			if(strcmp($tablesPKsRows->Key, "PRI") === 0)
 				$primary_keys[$oRow[0]][$oRow[0].".".$tablesPKsRows->Field] = $tablesPKsRows->Field; 
@@ -318,14 +382,12 @@ function getPKsUKsAIs($oLink, &$primary_keys, &$unique_keys, &$auto_increment_at
 			die("More than auto incremented attributes. Not supported. Exiting!");
 	}
 }
-
-require_once(dirname(__FILE__) . '/class.tableclass.php');
-require_once("../class.interrelationship.php");
-require_once("../class.interrelationships.php");
-require_once("../class.FK.php");
-require_once("../class.FKs.php");
-
-echo "eee";exit();
+require_once('../Database.php');
+require_once('Table.php');
+require_once("../Interrelationship/Interrelationship.php");
+require_once("../Interrelationship/InterrelationshipRepository.php");
+require_once("../ForeignKey/ForeignKey.php");
+require_once("../ForeignKey/ForeignKeyRepository.php");
 
 //Setup variable
 $primary_keys;
@@ -334,19 +396,24 @@ $auto_increment_attributes;
 
 
 // Finds the tables of the db
-$oLink = @mysql_connect($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]) or die("Error: Could not connect to server.");
-mysql_select_db($_POST["database"], $oLink);
+$db_uri 			= $_POST["serveraddress"];
+$db_name 			= $_POST["database"];
+$db_user_username 	= $_POST["serverusername"];
+$db_user_password 	= $_POST["serverpassword"];
+
+//$oLink = @mysql_connect($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]) or die("Error: Could not connect to server.");
+//mysql_select_db($_POST["database"], $oLink);
 
 //Get table's primary keys
 //Get table's unique keys
 //Get table's auto_increment attributes
-getPKsUKsAIs($oLink, $primary_keys, $unique_keys, $auto_increment_attributes);
+getPKsUKsAIs($primary_keys, $unique_keys, $auto_increment_attributes);
 //echo prettyFormatDump(print_r($primary_keys, true));
 //echo prettyFormatDump(print_r($unique_keys, true));
 //echo prettyFormatDump(print_r($auto_increment_attributes, true));
 
 //Get all FKs
-$FKs = getFKs($oLink);
+$FKs = getFKs();
 //echo prettyFormatDump(print_r($FKs, true));
 
 //Process FKs
@@ -359,14 +426,14 @@ $nonFKAttributes = getNonFKAttributes($FKs);
 
 //Start processing each table-class
 $query = "SHOW TABLES FROM ".$_POST["database"].";";
-$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
+$oResult = return_result_db($query, 'MYSQL_NUM');
 
 // For each table
-while($oRow = mysql_fetch_row($oResult))
+foreach ($oResult as $oRow)
 {	
 	// Create object for class file.
 //	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys[$oRow[0]], $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships);
-	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
+	$oClass = new Table($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
 
 	
 	// Save the class to a file.
@@ -375,7 +442,7 @@ while($oRow = mysql_fetch_row($oResult))
 	echo "Generating class file for class ".$oRow[0]."<br />";
 }
 
-	echo "<a href='download_output.php'>Get all classes of the db in a zip archive</a>";
+	echo "<br /><a href='../src/Database2Class/Api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

@@ -1,5 +1,7 @@
 <?php
 
+namespace Api;
+
 function create_zip($files = array(),$destination = '',$overwrite = false) {
 	//if the zip file already exists and overwrite is false, return false
 	if(file_exists($destination) && !$overwrite) { return false; }
@@ -28,10 +30,10 @@ function create_zip($files = array(),$destination = '',$overwrite = false) {
 		}
 		//debug
 		//echo 'The zip archive contains ',$zip->numFiles,' files with a status of ',$zip->status;
-		
+
 		//close the zip -- done!
 		$zip->close();
-		
+
 		//check to make sure the file exists
 		return file_exists($destination);
 	}
@@ -45,7 +47,7 @@ function create_zip($files = array(),$destination = '',$overwrite = false) {
 	{
 		$dir_contents = scandir($a_dir);
 		$result = array();
-		
+
 		foreach($dir_contents as $a_dir_content)
 		{
 			if (strcmp($a_dir_content, "..") === 0 || strcmp($a_dir_content, ".") === 0)
@@ -53,15 +55,15 @@ function create_zip($files = array(),$destination = '',$overwrite = false) {
 			else
 				array_push($result, $a_dir.$a_dir_content);
 		}
-		
+
 		return $result;
 	}
-	
+
 	function delete_files_in_output($files_to_delete)
 	{
 		foreach ($files_to_delete as $a_file_to_delete)
 		{
-			if (strcmp('class.database.php', $a_file_to_delete) !== 0 && strcmp('settings.php', $a_file_to_delete) !== 0)
+			if (strcmp('Database.php', $a_file_to_delete) !== 0 && strcmp('Settings.php', $a_file_to_delete) !== 0)
 				unlink($a_file_to_delete);
 		}
 	}
@@ -69,17 +71,17 @@ function create_zip($files = array(),$destination = '',$overwrite = false) {
 	function download_output()
 	{
 		$files_to_zip = my_scandir("output/");
-		
-		array_push($files_to_zip, 'class.database.php');
-		array_push($files_to_zip, 'settings.php');
-		
+
+		array_push($files_to_zip, 'Database.php');
+		array_push($files_to_zip, 'Settings.php');
+
 		//print_r($files_to_include); exit();
-		
+
 		$filename = "db2PHPclass_".date("Y_m_d_H_i_s", strtotime("now")).".zip";
 		$result = create_zip($files_to_zip,$filename);
-		
+
 		delete_files_in_output($files_to_zip);
-		
+
 		if (file_exists($filename)) {
 			header('Content-Description: File Transfer');
 			header('Content-Type: application/zip');
@@ -89,12 +91,12 @@ function create_zip($files = array(),$destination = '',$overwrite = false) {
 			header('Pragma: public');
 			header('Content-Length: ' . filesize($filename));
 			readfile($filename);
-			
+
 			//unlink($filename);
 
 			exit;
 		}
 	}
-	
+
 	download_output();
 ?>

@@ -1,4 +1,7 @@
 <?php
+
+namespace Api;
+
 // Attempt to list databases with supplied credentials.
 $oLink = @mysql_connect($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]) or die("Error: Could not connect to server.");
 $oResult = mysql_query("SHOW TABLES FROM " . $_POST["database"] . ";");

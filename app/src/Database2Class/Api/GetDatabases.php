@@ -1,5 +1,10 @@
 <?php
-include_once '../class.database.php';
+
+namespace Api;
+
+use Database2Class\Database;
+
+include_once '../Database.php';
 
 $a_db = new Database($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]);
 

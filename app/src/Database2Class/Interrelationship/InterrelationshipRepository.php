@@ -20,23 +20,23 @@ class InterrelationshipRepository
         return ($this->all_interrelationships);
     }
 
+    public function setall_interrelationships($mValue)
+    {
+        $this->all_interrelationships = $mValue;
+    }
+
     public function getan_interrelationship($mValue)
     {
         $values = array_values($this->all_interrelationships);
         return ($values[$mValue]);
     }
 
+    // SET Functions
+
     public function getnoOfinterrelationships()
     {
         return (count($this->all_interrelationships));
     }
-
-    // SET Functions
-    public function setall_interrelationships($mValue)
-    {
-        $this->all_interrelationships = $mValue;
-    }
-
 
     public function add_an_interrelationship($mValue)
     {
@@ -66,12 +66,6 @@ class InterrelationshipRepository
         return $result;
     }
 
-    public function return_object_vars()
-    {
-        $results = get_object_vars($this);
-        return $results;
-    }
-
     public function nice_print()
     {
         echo "<br />";
@@ -92,6 +86,12 @@ class InterrelationshipRepository
         }
 
         echo $a_dump;
+    }
+
+    public function return_object_vars()
+    {
+        $results = get_object_vars($this);
+        return $results;
     }
 }
 

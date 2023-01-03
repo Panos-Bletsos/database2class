@@ -39,26 +39,14 @@ class ForeignKey
         return ($this->source_table);
     }
 
-    public function getdest_table()
-    {
-        return ($this->dest_table);
-    }
-
-    public function getsource_attribute()
-    {
-        return ($this->source_attribute);
-    }
-
-    public function getdest_attribute()
-    {
-        return ($this->dest_attribute);
-    }
-
-
-    // SET Functions
     public function setsource_table($mValue)
     {
         $this->source_table = $mValue;
+    }
+
+    public function getdest_table()
+    {
+        return ($this->dest_table);
     }
 
     public function setdest_table($mValue)
@@ -66,9 +54,22 @@ class ForeignKey
         $this->dest_table = $mValue;
     }
 
+
+    // SET Functions
+
+    public function getsource_attribute()
+    {
+        return ($this->source_attribute);
+    }
+
     public function setsource_attribute($mValue)
     {
         $this->source_attribute = $mValue;
+    }
+
+    public function getdest_attribute()
+    {
+        return ($this->dest_attribute);
     }
 
     public function setdest_attribute($mValue)

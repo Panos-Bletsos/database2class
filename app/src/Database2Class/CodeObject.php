@@ -220,15 +220,6 @@ class CodeObject
         }
     }
 
-    private function str_insert($insertstring, $intostring, $position)
-    {
-        $part1 = substr($intostring, 0, $position);
-        $part2 = substr($intostring, $position);
-        $part1 = $part1 . $insertstring;
-        $whole = $part1 . $part2;
-        return $whole;
-    }
-
     private function str_delete($numchars, $fromstring, $position)
     {
         $part1 = substr($fromstring, 0, $position);
@@ -243,6 +234,15 @@ class CodeObject
         $indent = str_repeat($this->indentation_unit, $level);
         $this->code = $this->str_insert($indent, $this->code, $pos);
         return strlen($indent);
+    }
+
+    private function str_insert($insertstring, $intostring, $position)
+    {
+        $part1 = substr($intostring, 0, $position);
+        $part2 = substr($intostring, $position);
+        $part1 = $part1 . $insertstring;
+        $whole = $part1 . $part2;
+        return $whole;
     }
 }
 

@@ -50,55 +50,14 @@ class Interrelationship
         return ($this->source_table);
     }
 
-    public function getdest_table()
-    {
-        return ($this->dest_table);
-    }
-
-    public function getcardinality()
-    {
-        return ($this->cardinality);
-    }
-
-    public function getvia_table()
-    {
-        return ($this->via_table);
-    }
-
-    public function getvia_table_eq_args()
-    {
-        return ($this->via_table_eq_args);
-    }
-
-    public function getsource_attribute()
-    {
-        return ($this->source_attribute);
-    }
-
-    public function getdest_attribute()
-    {
-        return ($this->dest_attribute);
-    }
-
-    public function getrelationship_type()
-    {
-        return ($this->relationship_type);
-    }
-
-    public function gettables_involved()
-    {
-        return ($this->tables_involved);
-    }
-
-    public function getextra_attributes()
-    {
-        return ($this->extra_attributes);
-    }
-
-    // SET Functions
     public function setsource_table($mValue)
     {
         $this->source_table = $mValue;
+    }
+
+    public function getdest_table()
+    {
+        return ($this->dest_table);
     }
 
     public function setdest_table($mValue)
@@ -106,9 +65,19 @@ class Interrelationship
         $this->dest_table = $mValue;
     }
 
+    public function getcardinality()
+    {
+        return ($this->cardinality);
+    }
+
     public function setcardinality($mValue)
     {
         $this->cardinality = $mValue;
+    }
+
+    public function getvia_table()
+    {
+        return ($this->via_table);
     }
 
     public function setvia_table($mValue)
@@ -116,9 +85,21 @@ class Interrelationship
         $this->via_table = $mValue;
     }
 
+    public function getvia_table_eq_args()
+    {
+        return ($this->via_table_eq_args);
+    }
+
     public function setvia_table_eq_args($mValue)
     {
         $this->via_table_eq_args = $mValue;
+    }
+
+    // SET Functions
+
+    public function getsource_attribute()
+    {
+        return ($this->source_attribute);
     }
 
     public function setsource_attribute($mValue)
@@ -126,9 +107,19 @@ class Interrelationship
         $this->source_attribute = $mValue;
     }
 
+    public function getdest_attribute()
+    {
+        return ($this->dest_attribute);
+    }
+
     public function setdest_attribute($mValue)
     {
         $this->dest_attribute = $mValue;
+    }
+
+    public function getrelationship_type()
+    {
+        return ($this->relationship_type);
     }
 
     public function setrelationship_type($mValue)
@@ -136,9 +127,19 @@ class Interrelationship
         $this->relationship_type = $mValue;
     }
 
+    public function gettables_involved()
+    {
+        return ($this->tables_involved);
+    }
+
     public function settables_involved($mValue)
     {
         $this->tables_involved = $mValue;
+    }
+
+    public function getextra_attributes()
+    {
+        return ($this->extra_attributes);
     }
 
     public function setextra_attributes($mValue)

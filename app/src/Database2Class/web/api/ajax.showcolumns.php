@@ -5,7 +5,7 @@ mysql_select_db($_POST["database"], $oLink);
 $oResult = mysql_query("SHOW COLUMNS FROM " . $_POST["table"] . ";");
 
 // Check for valid results
-if(mysql_affected_rows($oLink) == 0) {
+if (mysql_affected_rows($oLink) == 0) {
     echo "Error: No columns returned from table \"" . $_POST["table"] . "\" in database \"" . $_POST["database"] . "\".";
     exit;
 }
@@ -14,9 +14,9 @@ if(mysql_affected_rows($oLink) == 0) {
 echo "<option value=\"\"></option>";
 
 // Ouput column names
-while($oRow = mysql_fetch_object($oResult)) {
+while ($oRow = mysql_fetch_object($oResult)) {
     // Attempt to detect primary key column.
-    if($oRow->Key == "PRI") {
+    if ($oRow->Key == "PRI") {
         // Primary key column.
         //echo "<option value=\"" . $oRow->Field . "\" selected=\"selected\">" . $oRow->Field . "</option>\n";
         echo "<option value=\"" . $oRow->Field . "\" class=\"primarykey\">" . $oRow->Field . "</option>\n";

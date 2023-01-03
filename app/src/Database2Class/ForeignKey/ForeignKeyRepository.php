@@ -14,12 +14,6 @@ class ForeignKeyRepository
     {
     }
 
-    public function return_object_vars()
-    {
-        $results = get_object_vars($this);
-        return $results;
-    }
-
     public function nice_print()
     {
         echo "<br />";
@@ -42,10 +36,22 @@ class ForeignKeyRepository
         echo $a_dump;
     }
 
+    public function return_object_vars()
+    {
+        $results = get_object_vars($this);
+        return $results;
+    }
+
     // GET Functions
+
     public function getall_FKs()
     {
         return ($this->all_FKs);
+    }
+
+    public function setall_FKs($mValue)
+    {
+        $this->all_FKs = $mValue;
     }
 
     public function getan_FK($mValue)
@@ -92,6 +98,8 @@ class ForeignKeyRepository
         return $result;
     }
 
+    // SET Functions
+
     public function getFK_by_source_table_and_dest_table($a_source_table, $a_dest_table)
     {
         $result = array();
@@ -101,12 +109,6 @@ class ForeignKeyRepository
         }
 
         return $result;
-    }
-
-    // SET Functions
-    public function setall_FKs($mValue)
-    {
-        $this->all_FKs = $mValue;
     }
 
     public function add_an_FK($mValue)

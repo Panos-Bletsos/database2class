@@ -76,3 +76,7 @@ Temporary Items
 .apdisk
 
 .idea
+
+deploy/data/*
+deploy/logs/*
+deploy/www/**

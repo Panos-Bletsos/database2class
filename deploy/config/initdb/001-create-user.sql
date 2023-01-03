@@ -1,0 +1,3 @@
+CREATE USER 'db2php'@'%' IDENTIFIED WITH mysql_native_password BY 'db2php';
+GRANT ALL PRIVILEGES ON *.* TO 'db2php'@'%' WITH GRANT OPTION;
+FLUSH PRIVILEGES;

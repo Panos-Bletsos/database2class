@@ -8,7 +8,7 @@
 *   settings and use it in all your applications.
 */
 
-namespace ForeignKey;
+namespace Database2class\Database2class\ForeignKey;
 
 class ForeignKey
 {

@@ -16,7 +16,7 @@ $code_out = $obj_code->code;
 
 */
 
-namespace Database2Class;
+namespace Database2class\Database2class;
 
 class CodeObject
 {

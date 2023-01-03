@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Database2class\Database2class\Api;
 
 function create_zip($files = array(),$destination = '',$overwrite = false) {
 	//if the zip file already exists and overwrite is false, return false

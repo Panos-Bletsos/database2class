@@ -25,7 +25,7 @@ function tablesAttributes($a_table)
 }
 */
 
-use Database2Class\Table;
+use Database2class\Database2class\Table;
 use ForeignKey\ForeignKey;
 use ForeignKey\ForeignKeyRepository;
 use Interrelationship\Interrelationship;
@@ -381,7 +381,7 @@ while($oRow = mysql_fetch_row($oResult))
 	echo "Generating class file for class ".$oRow[0]."<br />";
 }
 
-	echo "<a href='Api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
+	echo "<a href='web/api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

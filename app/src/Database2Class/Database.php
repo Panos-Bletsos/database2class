@@ -8,7 +8,9 @@
 *   settings and use it in all your applications.
 */
 
-namespace Database2Class;
+namespace Database2class\Database2class;
+
+use PDO;
 
 class Database {
 	public $host;           // Hostname / Server

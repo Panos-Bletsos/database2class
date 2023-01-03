@@ -1,12 +1,12 @@
 <?php
-namespace Api;
+namespace Database2class\Database2class\Api;
 
-	/////////////////////////////////////////
-use Database2Class\Table;
-use ForeignKey\ForeignKey;
-use ForeignKey\ForeignKeyRepository;
-use Interrelationship\Interrelationship;
-use Interrelationship\InterrelationshipRepository;
+use Database2class\Database2class\Interrelationship\Interrelationship;
+use Database2class\Database2class\Table;
+use Database2class\Database2class\ForeignKey\ForeignKey;
+use Database2class\Database2class\ForeignKey\ForeignKeyRepository;
+use Database2class\Database2class\Interrelationship\InterrelationshipRepository;
+use PDO;
 
 ini_set('display_errors', true);
 	ini_set('html_errors', true);
@@ -141,7 +141,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($values[1]);
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("M:N, TfR");
 			$an_interrelationship->setextra_attributes(false);
 			$an_interrelationship->setcardinality("N");
@@ -169,14 +169,14 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 				
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -194,7 +194,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($values[1]);
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("1:N, TfR");	
 			$an_interrelationship->setextra_attributes("Aaaa");	
 			
@@ -219,7 +219,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($a_tables_FK->getdest_table());
 				$an_interrelationship->setdest_attribute($a_tables_FK->getdest_attribute());
 
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -442,7 +442,7 @@ foreach ($oResult as $oRow)
 	echo "Generating class file for class ".$oRow[0]."<br />";
 }
 
-	echo "<br /><a href='../src/Database2Class/Api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
+	echo "<br /><a href='GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

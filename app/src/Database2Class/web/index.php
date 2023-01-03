@@ -1,4 +1,6 @@
 <?php
+namespace Database2class\Database2class;
+
 /////////////////////////////////////////
 ini_set('display_errors', true);
 ini_set('html_errors', true);
@@ -33,7 +35,7 @@ error_reporting(E_ALL);
                 $("#output").html("Attempting to connect to MySQL server...");
 
                 // Submit form
-                $.post("../src/Database2Class/Api/GetDatabases.php", $("#form-connect").serialize(),
+                $.post("Api/GetDatabases.php", $("#form-connect").serialize(),
                     function(data){
                         if(data.indexOf("Error:") < 0) {
                             // Load output into select box for databases.
@@ -64,7 +66,7 @@ error_reporting(E_ALL);
                 if(strDatabase) {
                     $("#output").html("Retrieving tables for database \"" + strDatabase + "\"...");
                     // Populate selectbox
-                    $.post("../src/Database2Class/Api/GetTables.php", $("#form-connect").serialize(),
+                    $.post("api/GetTables.php", $("#form-connect").serialize(),
                         function(data){
                             if(data.indexOf("Error:") < 0) {
                                 // Load output into select box for databases.
@@ -87,7 +89,7 @@ error_reporting(E_ALL);
                 var strFilename = "class." + strClassname + ".php";
                 //	$("#output").html("Generating class file for class \"" + strClassname + "\"...");
                 // Post results to createfile page.
-                $.post("../src/Database2Class/Api/PostFileRequestForm.php", $("#form-connect").serialize(),
+                $.post("api/PostFileRequestForm.php", $("#form-connect").serialize(),
                     function(data){
                         if(data.indexOf("Error:") < 0) {
                             $("#output").html($("#output").html() + "<br /><br />" + data);

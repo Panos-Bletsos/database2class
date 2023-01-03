@@ -5,7 +5,7 @@
 *   This class provides methods to construct and write a class file.
 */
 
-namespace Database2Class;
+namespace Database2class\Database2class;
 
 require_once(dirname(__FILE__) . '/CodeObject.php');
 

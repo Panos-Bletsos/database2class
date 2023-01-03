@@ -8,7 +8,7 @@
 *   settings and use it in all your applications.
 */
 
-namespace Interrelationship;
+namespace Database2class\Database2class\Interrelationship;
 
 class Interrelationship
 {

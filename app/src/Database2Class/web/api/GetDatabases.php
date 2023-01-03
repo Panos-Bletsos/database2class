@@ -1,10 +1,12 @@
 <?php
 
-namespace Api;
+namespace Database2class\Database2class\Api;
 
-use Database2Class\Database;
+require_once '../../../../vendor/autoload.php';
 
-include_once '../Database.php';
+use Database2class\Database2class\Database;
+
+//include_once '../../src/Database2Class/Database.php';
 
 $a_db = new Database($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]);
 

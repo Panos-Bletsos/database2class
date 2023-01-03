@@ -1,6 +1,6 @@
 <?php
 
-namespace Interrelationship;
+namespace Database2class\Database2class\Interrelationship;
 
 class InterrelationshipRepository
 {

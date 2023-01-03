@@ -1,6 +1,6 @@
 <?php
 
-namespace ForeignKey;
+namespace Database2class\Database2class\ForeignKey;
 
 class ForeignKeyRepository
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Api;
+namespace Database2class\Database2class\Api;
 
 // Attempt to list databases with supplied credentials.
 $oLink = @mysql_connect($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]) or die("Error: Could not connect to server.");

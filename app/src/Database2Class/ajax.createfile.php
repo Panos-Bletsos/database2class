@@ -25,9 +25,15 @@ function tablesAttributes($a_table)
 }
 */
 
+use Database2class\Database2class\Table;
+use ForeignKey\ForeignKey;
+use ForeignKey\ForeignKeyRepository;
+use Interrelationship\Interrelationship;
+use Interrelationship\InterrelationshipRepository;
+
 function processFKs($PKs, $UKs, $FKs)
 {
-	$all_interrelationships = new Interrelationships();
+	$all_interrelationships = new InterrelationshipRepository();
 		
 	//Find cardinality cases
 	$allSourceTables = $FKs->getAllSourceTables();
@@ -43,7 +49,7 @@ function processFKs($PKs, $UKs, $FKs)
 		//foreach($a_tables_FKs as $source_FK => $dest_FK)
 		foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 		{
-			if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+			if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "database2PHPclass" .$a_tables_FK->getsource_attribute()]) === true)
 				$noOfPKs++;
 		}
 		
@@ -59,13 +65,13 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{				
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "database2PHPclass" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
 				
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 			}
 			
 			$temp_via_table_eq_args = substr($temp_via_table_eq_args,0, -5);
@@ -80,7 +86,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($values[1]);
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("M:N, TfR");
 			$an_interrelationship->setextra_attributes(false);
 			$an_interrelationship->setcardinality("N");
@@ -108,14 +114,14 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "database2PHPclass" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 				
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "database2PHPclass" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -137,7 +143,7 @@ function processFKs($PKs, $UKs, $FKs)
 				die ("Unexpected relationship! Aborting...");
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("1:N, TfR");	
 			$an_interrelationship->setextra_attributes("Aaaa");	
 			
@@ -162,7 +168,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($a_tables_FK->getdest_table());
 				$an_interrelationship->setdest_attribute($a_tables_FK->getdest_attribute());
 
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "database2PHPclass" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -238,7 +244,7 @@ function getFKs($oLink)
 	$oResult = mysql_query($query) or die( mysql_error().".<br />\n The query string was: ".$query);
 
 	// Preprocessing: For each table find foreign keys
-	$FKs = new FKs();
+	$FKs = new ForeignKeyRepository();
 	
 	while($oRow = mysql_fetch_row($oResult))
 	{
@@ -260,7 +266,7 @@ function getFKs($oLink)
 			//$FKs[stristr($tablesFKsRows->foreign_key, ".", true)][$tablesFKsRows->foreign_key] = $tablesFKsRows->references;
 			
 			//place all info in an object
-			$FK_object = new FK();			
+			$FK_object = new ForeignKey();
 			$source_parts = explode(".", $tablesFKsRows->foreign_key);
 			$dest_parts = explode(".", $tablesFKsRows->references);
 			
@@ -319,10 +325,10 @@ function getPKsUKsAIs($oLink, &$primary_keys, &$unique_keys, &$auto_increment_at
 	}
 }
 
-require_once(dirname(__FILE__) . '/class.tableclass.php');
-require_once("../class.interrelationship.php");
-require_once("../class.interrelationships.php");
-require_once("../class.FK.php");
+require_once(dirname(__FILE__) . '/Table.php');
+require_once("../Interrelationship.php");
+require_once("../Interrelationships.php");
+require_once("../ForeignKey.php");
 require_once("../class.FKs.php");
 
 echo "eee";exit();
@@ -366,7 +372,7 @@ while($oRow = mysql_fetch_row($oResult))
 {	
 	// Create object for class file.
 //	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys[$oRow[0]], $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships);
-	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
+	$oClass = new Table($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
 
 	
 	// Save the class to a file.
@@ -375,7 +381,7 @@ while($oRow = mysql_fetch_row($oResult))
 	echo "Generating class file for class ".$oRow[0]."<br />";
 }
 
-	echo "<a href='download_output.php'>Get all classes of the db in a zip archive</a>";
+	echo "<a href='web/api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

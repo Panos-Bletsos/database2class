@@ -1,0 +1,17 @@
+{
+    "name": "database2class/database2class",
+    "description": "Creates the correspoding php class for a selected mysql database.",
+    "type": "project",
+    "autoload": {
+        "psr-4": {
+            "Database2class\\Database2class\\": "src/Database2Class"
+        }
+    },
+    "authors": [
+        {
+            "name": "Panos Bletsos",
+            "email": "panos.bletsos@gmail.com"
+        }
+    ],
+    "require": {}
+}

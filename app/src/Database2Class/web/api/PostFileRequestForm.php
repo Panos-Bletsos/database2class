@@ -1,6 +1,14 @@
 <?php
-	/////////////////////////////////////////
-	ini_set('display_errors', true);
+namespace Database2class\Database2class\Api;
+
+use Database2class\Database2class\Interrelationship\Interrelationship;
+use Database2class\Database2class\Table;
+use Database2class\Database2class\ForeignKey\ForeignKey;
+use Database2class\Database2class\ForeignKey\ForeignKeyRepository;
+use Database2class\Database2class\Interrelationship\InterrelationshipRepository;
+use PDO;
+
+ini_set('display_errors', true);
 	ini_set('html_errors', true);
 	error_reporting(E_ALL);
 	/////////////////////////////////////////
@@ -80,7 +88,7 @@ function return_result_db($query, $result_type = 'MYSQL_ASSOC', $type='mysql', $
 
 function processFKs($PKs, $UKs, $FKs)
 {
-	$all_interrelationships = new Interrelationships();
+	$all_interrelationships = new InterrelationshipRepository();
 		
 	//Find cardinality cases
 	$allSourceTables = $FKs->getAllSourceTables();
@@ -96,7 +104,7 @@ function processFKs($PKs, $UKs, $FKs)
 		//foreach($a_tables_FKs as $source_FK => $dest_FK)
 		foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 		{
-			if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+			if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "includes" .$a_tables_FK->getsource_attribute()]) === true)
 				$noOfPKs++;
 		}
 		
@@ -112,13 +120,13 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{				
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "includes" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute(). " AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
 				
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 			}
 			
 			$temp_via_table_eq_args = substr($temp_via_table_eq_args,0, -5);
@@ -133,7 +141,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($values[1]);
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("M:N, TfR");
 			$an_interrelationship->setextra_attributes(false);
 			$an_interrelationship->setcardinality("N");
@@ -161,14 +169,14 @@ function processFKs($PKs, $UKs, $FKs)
 			foreach($a_tables_FKs->getall_FKs() as $a_tables_FK)
 			{
 				if (strcmp($an_interrelationship->getvia_table(), "") === 0)
-					$temp_via_table_eq_args .= $a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
+					$temp_via_table_eq_args .= $a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 				else
 					$temp_via_table_eq_args .= $an_interrelationship->getvia_table()." AND ".$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()." = ".$a_tables_FK->getdest_table().".".$a_tables_FK->getdest_attribute()." AND ";
 					
 				$tables_used[$a_tables_FK->getdest_table()] = $a_tables_FK->getdest_table();
-				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_tables_FK->getdest_table().", ");
+				$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_tables_FK->getdest_table() .", ");
 				
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -186,7 +194,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($values[1]);
 			}
 			
-			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved().$a_table);
+			$an_interrelationship->settables_involved($an_interrelationship->gettables_involved() . $a_table);
 			$an_interrelationship->setrelationship_type("1:N, TfR");	
 			$an_interrelationship->setextra_attributes("Aaaa");	
 			
@@ -211,7 +219,7 @@ function processFKs($PKs, $UKs, $FKs)
 				$an_interrelationship->setdest_table($a_tables_FK->getdest_table());
 				$an_interrelationship->setdest_attribute($a_tables_FK->getdest_attribute());
 
-				if (isset($PKs[$a_table][$a_tables_FK->getsource_table().".".$a_tables_FK->getsource_attribute()]) === true)
+				if (isset($PKs[$a_table][$a_tables_FK->getsource_table() . "api" .$a_tables_FK->getsource_attribute()]) === true)
 					$an_interrelationship->setcardinality("N");
 				else
 					$an_interrelationship->setcardinality("1");
@@ -287,7 +295,7 @@ function getFKs()
 	$oResult = return_result_db($query, 'MYSQL_NUM');
 
 	// Preprocessing: For each table find foreign keys
-	$FKs = new FKs();
+	$FKs = new ForeignKeyRepository();
 	
 	//while($oRow = mysql_fetch_row($oResult))
 	foreach ($oResult as $oRow)
@@ -313,7 +321,7 @@ function getFKs()
 			//$FKs[stristr($tablesFKsRows->foreign_key, ".", true)][$tablesFKsRows->foreign_key] = $tablesFKsRows->references;
 			
 			//place all info in an object
-			$FK_object = new FK();			
+			$FK_object = new ForeignKey();
 			$source_parts = explode(".", $tablesFKsRows->foreign_key);
 			$dest_parts = explode(".", $tablesFKsRows->references);
 			
@@ -374,12 +382,12 @@ function getPKsUKsAIs(&$primary_keys, &$unique_keys, &$auto_increment_attributes
 			die("More than auto incremented attributes. Not supported. Exiting!");
 	}
 }
-require_once('../class.database.php');
-require_once('class.tableclass.php');
-require_once("../class.interrelationship.php");
-require_once("../class.interrelationships.php");
-require_once("../class.FK.php");
-require_once("../class.FKs.php");
+require_once('../Database.php');
+require_once('Table.php');
+require_once("../Interrelationship/Interrelationship.php");
+require_once("../Interrelationship/InterrelationshipRepository.php");
+require_once("../ForeignKey/ForeignKey.php");
+require_once("../ForeignKey/ForeignKeyRepository.php");
 
 //Setup variable
 $primary_keys;
@@ -425,7 +433,7 @@ foreach ($oResult as $oRow)
 {	
 	// Create object for class file.
 //	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys[$oRow[0]], $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships);
-	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
+	$oClass = new Table($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
 
 	
 	// Save the class to a file.
@@ -434,7 +442,7 @@ foreach ($oResult as $oRow)
 	echo "Generating class file for class ".$oRow[0]."<br />";
 }
 
-	echo "<br /><a href='download_output.php'>Get all classes of the db in a zip archive</a>";
+	echo "<br /><a href='GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

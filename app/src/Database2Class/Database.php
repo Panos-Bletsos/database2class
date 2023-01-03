@@ -1,12 +1,16 @@
 <?php
 /*
-*   class.database.php
+*   Database.php
 *   loosely based on a class by: MARCO VOEGELI (www.voegeli.li)
 *
 *   This class provides one central database-connection for
 *   all your php applications. Define only once your connection
 *   settings and use it in all your applications.
 */
+
+namespace Database2class\Database2class;
+
+use PDO;
 
 class Database {
 	public $host;           // Hostname / Server

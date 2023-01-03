@@ -7,10 +7,14 @@
 
 <body>
 <?php
-	include("class.interrelationship.php");
-	include("class.interrelationships.php");
 
-	$all_interrelationships = new Interrelationships();
+use Interrelationship\Interrelationship;
+use Interrelationship\InterrelationshipRepository;
+
+include("Interrelationship.php");
+	include("Interrelationships.php");
+
+	$all_interrelationships = new InterrelationshipRepository();
 	$an_interrelationship = new Interrelationship();
 	$an_interrelationship->setsource_table("a");
 	$an_interrelationship->setsource_attribute("b");

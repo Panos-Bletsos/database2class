@@ -1,4 +1,5 @@
 <?php
+    namespace Database2class\Database2class;
 
 	//for home
 	$db_uri = "";	//Alter this value

@@ -32,7 +32,7 @@ in the file `deploy/.env`.
 From the root directory of the project
 
 ```shell
-./sbin/clean-start.sh
+./sbin/deploy.sh
 ```
 
 ### Stop containers

@@ -10,7 +10,7 @@ error_reporting(E_ALL);
 <!DOCTYPE html>
 <head>
     <!-- *** METADATA *** -->
-    <meta name="copyright" content="&copy; Copyright 2011 StevenFlesch.com" />
+    <meta name="copyright" content="&copy; Copyright 2011 StevenFlesch.com"/>
     <meta charset="UTF-8">
     <title>table2class - Automatic Class Generator - brought to you by StevenFlesch.com</title>
     <!-- *** CSS ***
@@ -19,9 +19,9 @@ error_reporting(E_ALL);
     <script type="text/javascript" src="js/jquery.js"></script>
     <script type="text/javascript">
         // Bind form elements to actions
-        $(document).ready(function() {
+        $(document).ready(function () {
             // Connect button
-            $("#serverconnect").click(function(){
+            $("#serverconnect").click(function () {
                 // Reset form
                 $("#database").attr("disabled", "disabled");
                 $("#database").html("<option>... Please Connect ...</option>");
@@ -36,8 +36,8 @@ error_reporting(E_ALL);
 
                 // Submit form
                 $.post("Api/GetDatabases.php", $("#form-connect").serialize(),
-                    function(data){
-                        if(data.indexOf("Error:") < 0) {
+                    function (data) {
+                        if (data.indexOf("Error:") < 0) {
                             // Load output into select box for databases.
                             $("#database").html(data);
                             $("#database").removeAttr("disabled").focus();    // enable form
@@ -51,7 +51,7 @@ error_reporting(E_ALL);
             });
 
             // Database selectbox
-            $("#database").change(function() {
+            $("#database").change(function () {
                 // Disable lower parts of form.
                 $("#table").attr("disabled", "disabled");
                 $("#table").html("<option>... Please Connect ...</option>");
@@ -63,12 +63,12 @@ error_reporting(E_ALL);
 
                 // Output text
                 var strDatabase = $("#database option:selected").text();
-                if(strDatabase) {
+                if (strDatabase) {
                     $("#output").html("Retrieving tables for database \"" + strDatabase + "\"...");
                     // Populate selectbox
                     $.post("api/GetTables.php", $("#form-connect").serialize(),
-                        function(data){
-                            if(data.indexOf("Error:") < 0) {
+                        function (data) {
+                            if (data.indexOf("Error:") < 0) {
                                 // Load output into select box for databases.
                                 $("#table").html(data);
                                 $("#table").removeAttr("disabled").focus();    // enable form
@@ -83,15 +83,15 @@ error_reporting(E_ALL);
             });
 
             // Generate Class Button
-            $("#classgenerate").click(function() {
+            $("#classgenerate").click(function () {
                 // Output text
                 var strClassname = $("#classname").attr("value");
                 var strFilename = "class." + strClassname + ".php";
                 //	$("#output").html("Generating class file for class \"" + strClassname + "\"...");
                 // Post results to createfile page.
                 $.post("api/PostFileRequestForm.php", $("#form-connect").serialize(),
-                    function(data){
-                        if(data.indexOf("Error:") < 0) {
+                    function (data) {
+                        if (data.indexOf("Error:") < 0) {
                             $("#output").html($("#output").html() + "<br /><br />" + data);
                         } else {
                             // No data outputted, no valid databases.
@@ -116,12 +116,12 @@ error_reporting(E_ALL);
                 <form id="form-connect" method="post"><!-- Encase all options in this form -->
                     <h2>Connect To Your Server</h2>
                     <div id="div-connect">
-                        <label>Server Address</label><br />
-                        <input name="serveraddress" type="text" size="25" value="localhost" /><br />
-                        <label>Server Username</label><br />
-                        <input name="serverusername" type="text" size="25" value="" /><br />
+                        <label>Server Address</label><br/>
+                        <input name="serveraddress" type="text" size="25" value="localhost"/><br/>
+                        <label>Server Username</label><br/>
+                        <input name="serverusername" type="text" size="25" value=""/><br/>
                         <label>Server Password</label><br/>
-                        <input name="serverpassword" type="password" size="25"  value=""/><br />
+                        <input name="serverpassword" type="password" size="25" value=""/><br/>
                         <button name="serverconnect" id="serverconnect">Connect</button>
                     </div>
 
@@ -166,7 +166,8 @@ error_reporting(E_ALL);
                 <h2>Script Output</h2>
                 <div id="output">
                     <p>
-                        <strong>database2Class</strong> is a lightweight PHP script that creates interconnected class definitions from MySQL tables automatically.
+                        <strong>database2Class</strong> is a lightweight PHP script that creates interconnected class
+                        definitions from MySQL tables automatically.
                     </p>
                     <!--
                                             <h3>Contributions</h3>

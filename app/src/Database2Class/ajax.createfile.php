@@ -353,7 +353,7 @@ $oResult = mysql_query($query) or die(mysql_error() . ".<br />\n The query strin
 while ($oRow = mysql_fetch_row($oResult)) {
     // Create object for class file.
 //	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys[$oRow[0]], $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships);
-    $oClass = new Table($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
+    $oClass = new Table($auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs, $oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]]);
 
 
     // Save the class to a file.

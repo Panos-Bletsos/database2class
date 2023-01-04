@@ -7,7 +7,9 @@
 
 namespace Database2class\Database2class;
 
-require_once(dirname(__FILE__) . '/CodeObject.php');
+require_once __DIR__.'/../../vendor/autoload.php';
+
+use Database2class\Database2class\Helper\Helper;
 
 class Table
 {
@@ -30,15 +32,17 @@ class Table
     private $alldbPKs = array();
     private $alldbFKs;
     private $nonFKAttributes = array();
+    private string|false $outputDir;
 
-    public function __construct($sName = "newclass", $sDatabase = "", $sTable = "", $sPrimaryKey = "", $sServerAddress = "localhost", $sServerUsername = "root", $sServerPassword = "", $sUniqueKey = "", $sAuto_Increment_Attributes, $sInterrelationships, $sNonFKAttributes, $sForeignKey)
+    public function __construct($sAuto_Increment_Attributes, $sInterrelationships, $sNonFKAttributes, $sForeignKey, $sName = "newclass", $sDatabase = "", $sTable = "", $sPrimaryKey = "", $sServerAddress = "localhost", $sServerUsername = "root", $sServerPassword = "", $sUniqueKey = "")
     {
         // Construction of class
         $this->classname = $sName;
         $this->filedate = date("l, M j, Y - G:i:s T");
-        $this->filesrequired = array("class.database.php");                     // Add any other required files here.
+        $this->filesrequired = array("Database.php");                     // Add any other required files here.
         $this->filename = "class.$this->classname.php";
-        $this->filepath = realpath(dirname(__FILE__) . "/../output/") . "/Table.php";
+        $this->outputDir = "/tmp/database2class/output/";
+        $this->filepath = $this->outputDir . "/$this->filename";
         $this->databasename = $sDatabase;
         $this->serveraddress = $sServerAddress;
         $this->serverusername = $sServerUsername;
@@ -73,7 +77,7 @@ class Table
         $db_user_username = $sServerUsername;
         $db_user_password = $sServerPassword;
 
-        $a_temp = return_result_db($query);
+        $a_temp = Helper::return_result_db($query);
 
         //print_r($a_temp);exit();
 
@@ -171,6 +175,10 @@ class Table
                 unlink($this->filename);
             }
 
+            if (!is_dir($this->outputDir)) {
+                mkdir($this->outputDir, 0755, true);
+            }
+
             // Open file (insert mode), set the file date, and write the contents.
             $oFile = fopen($this->filepath, "w+");
             fwrite($oFile, $sFile);
@@ -240,7 +248,7 @@ class Table
 
         global $path_to_database;
         global $path_to_settings;
-        include_once("../Settings.php");
+//        include_once("Settings.php");
 
 
         // public function to create the class constructor and destructor.

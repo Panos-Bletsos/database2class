@@ -2,6 +2,8 @@
 
 namespace Database2class\Database2class\Api;
 
+use ZipArchive;
+
 function create_zip($files = array(), $destination = '', $overwrite = false)
 {
     //if the zip file already exists and overwrite is false, return false
@@ -62,21 +64,21 @@ function my_scandir($a_dir)
 function delete_files_in_output($files_to_delete)
 {
     foreach ($files_to_delete as $a_file_to_delete) {
-        if (strcmp('Database.php', $a_file_to_delete) !== 0 && strcmp('Settings.php', $a_file_to_delete) !== 0)
+        if (!str_contains( $a_file_to_delete, 'Database.php') && !str_contains($a_file_to_delete, 'Settings.php'))
             unlink($a_file_to_delete);
     }
 }
 
 function download_output()
 {
-    $files_to_zip = my_scandir("output/");
+    $files_to_zip = my_scandir("/tmp/database2class/output/");
 
-    array_push($files_to_zip, 'Database.php');
-    array_push($files_to_zip, 'Settings.php');
+    array_push($files_to_zip, '../../Database.php');
+    array_push($files_to_zip, '../../Settings.php');
 
     //print_r($files_to_include); exit();
 
-    $filename = "db2PHPclass_" . date("Y_m_d_H_i_s", strtotime("now")) . ".zip";
+    $filename = "/tmp/database2class/" . "db2PHPclass_" . date("Y_m_d_H_i_s", strtotime("now")) . ".zip";
     $result = create_zip($files_to_zip, $filename);
 
     delete_files_in_output($files_to_zip);

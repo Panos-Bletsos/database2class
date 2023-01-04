@@ -2,12 +2,14 @@
 
 namespace Database2class\Database2class\Api;
 
+require_once("../../../../vendor/autoload.php");
+
 use Database2class\Database2class\ForeignKey\ForeignKey;
 use Database2class\Database2class\ForeignKey\ForeignKeyRepository;
+use Database2class\Database2class\Helper\Helper;
 use Database2class\Database2class\Interrelationship\Interrelationship;
 use Database2class\Database2class\Interrelationship\InterrelationshipRepository;
 use Database2class\Database2class\Table;
-use PDO;
 
 ini_set('display_errors', true);
 ini_set('html_errors', true);
@@ -33,52 +35,6 @@ function tablesAttributes($a_table)
 	}	
 }
 */
-
-function return_result_db($query, $result_type = 'MYSQL_ASSOC', $type = 'mysql', $path_to_db_file = "")
-{
-    if (strcmp($type, 'mysql') === 0) {
-        global $db_uri;
-        global $db_name;
-        global $db_user_username;
-        global $db_user_password;
-
-        $db = new PDO('mysql:host=' . $db_uri . ';charset=utf8;dbname=' . $db_name, $db_user_username, $db_user_password);
-    } else {
-        if (strcmp($path_to_db_file, "") === 0)
-            $db = new PDO('sqlite:XXXX/XXXX.sqlite');    //Change here for default value
-        else
-            $db = new PDO('sqlite:' . $path_to_db_file);
-    }
-
-    //$temp = $db->prepare($query);
-    //$execution_result = $temp->execute();
-    if (strcmp($result_type, 'MYSQL_ASSOC') === 0)
-        $result = $db->query($query, PDO::FETCH_ASSOC);
-    elseif (strcmp($result_type, 'MYSQL_NUM') === 0)
-        $result = $db->query($query, PDO::FETCH_NUM);
-    elseif (strcmp($result_type, 'MYSQL_BOTH') === 0)
-        $result = $db->query($query, PDO::FETCH_BOTH);
-    elseif (strcmp($result_type, 'MYSQL_OBJ') === 0)
-        $result = $db->query($query, PDO::FETCH_OBJ);
-    else
-        exit("Not recognised result_type");
-
-    if ($result === false) {
-        $the_error = $db->errorInfo();
-        exit("There was an error querying the db!<br />The query was: " . $query . "<br />Error info: " . $the_error[2]);
-    } else {
-        $return_val = array();
-
-        foreach ($result as $row) {
-            array_push($return_val, $row);
-        }
-
-//		if (count($return_val) === 1)
-//			$return_val = $return_val[0];
-
-        return $return_val;
-    }
-}
 
 function processFKs($PKs, $UKs, $FKs)
 {
@@ -228,7 +184,7 @@ function processFKs($PKs, $UKs, $FKs)
 function getNonFKAttributes($FKs)
 {
     $query = "SHOW TABLES FROM " . $_POST["database"] . ";";
-    $oResult = return_result_db($query, 'MYSQL_NUM');
+    $oResult = Helper::return_result_db($query, 'MYSQL_NUM');
 
     $nonFKAttributes = array();
 
@@ -238,7 +194,7 @@ function getNonFKAttributes($FKs)
 
         // Finds the tables of the db
         $queryAttributes = "SHOW COLUMNS FROM " . $oRow[0] . ";";
-        $tablesAttributes = return_result_db($queryAttributes, 'MYSQL_OBJ');
+        $tablesAttributes = Helper::return_result_db($queryAttributes, 'MYSQL_OBJ');
 
         // Collect table names
         foreach ($tablesAttributes as $tablesAttributesRows) {
@@ -273,7 +229,7 @@ function prettyFormatDump($a_dump)
 function getFKs()
 {
     $query = "SHOW TABLES FROM " . $_POST["database"] . ";";
-    $oResult = return_result_db($query, 'MYSQL_NUM');
+    $oResult = Helper::return_result_db($query, 'MYSQL_NUM');
 
     // Preprocessing: For each table find foreign keys
     $FKs = new ForeignKeyRepository();
@@ -291,7 +247,7 @@ function getFKs()
 
         //$tablesFKs = mysql_query($queryFKs) or die( mysql_error().".<br />\n The query string was: ".$queryFKs);
 
-        $oResult2 = return_result_db($queryFKs, 'MYSQL_OBJ');
+        $oResult2 = Helper::return_result_db($queryFKs, 'MYSQL_OBJ');
 
         // Collect table's FKs
         //while($tablesFKsRows = mysql_fetch_object($tablesFKs))
@@ -319,7 +275,7 @@ function getFKs()
 function getPKsUKsAIs(&$primary_keys, &$unique_keys, &$auto_increment_attributes)
 {
     $query = "SHOW TABLES FROM " . $_POST["database"] . ";";
-    $oResult = return_result_db($query, 'MYSQL_NUM');
+    $oResult = Helper::return_result_db($query, 'MYSQL_NUM');
 
     //Get tables' primary keys
     $primary_keys = array();
@@ -338,7 +294,7 @@ function getPKsUKsAIs(&$primary_keys, &$unique_keys, &$auto_increment_attributes
 
         // Finds the tables of the db
         $queryPKs = "SHOW COLUMNS FROM " . $oRow[0] . ";";
-        $oResult2 = return_result_db($queryPKs, 'MYSQL_OBJ');
+        $oResult2 = Helper::return_result_db($queryPKs, 'MYSQL_OBJ');
         //$tablesPKs = mysql_query($queryPKs) or die( mysql_error().".<br />\n The query string was: ".$queryPKs);
 
 
@@ -359,13 +315,6 @@ function getPKsUKsAIs(&$primary_keys, &$unique_keys, &$auto_increment_attributes
             die("More than auto incremented attributes. Not supported. Exiting!");
     }
 }
-
-require_once('../Database.php');
-require_once('Table.php');
-require_once("../Interrelationship/Interrelationship.php");
-require_once("../Interrelationship/InterrelationshipRepository.php");
-require_once("../ForeignKey/ForeignKey.php");
-require_once("../ForeignKey/ForeignKeyRepository.php");
 
 //Setup variable
 $primary_keys;
@@ -404,13 +353,13 @@ $nonFKAttributes = getNonFKAttributes($FKs);
 
 //Start processing each table-class
 $query = "SHOW TABLES FROM " . $_POST["database"] . ";";
-$oResult = return_result_db($query, 'MYSQL_NUM');
+$oResult = Helper::return_result_db($query, 'MYSQL_NUM');
 
 // For each table
 foreach ($oResult as $oRow) {
     // Create object for class file.
 //	$oClass = new tableClass($oRow[0], $_POST["database"], $oRow[0], $primary_keys[$oRow[0]], $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships);
-    $oClass = new Table($oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]], $auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs);
+    $oClass = new Table($auto_increment_attributes[$oRow[0]], $all_interrelationships, $nonFKAttributes, $FKs, $oRow[0], $_POST["database"], $oRow[0], $primary_keys, $_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"], $unique_keys[$oRow[0]]);
 
 
     // Save the class to a file.
@@ -419,7 +368,7 @@ foreach ($oResult as $oRow) {
     echo "Generating class file for class " . $oRow[0] . "<br />";
 }
 
-echo "<br /><a href='GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
+echo "<br /><a href='api/GetClassesZipped.php'>Get all classes of the db in a zip archive</a>";
 
 /*
 if(isset($_GET["displayclass"]) && $_GET["displayclass"] > 0) {

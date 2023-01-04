@@ -6,7 +6,6 @@ require_once '../../../../vendor/autoload.php';
 
 use Database2class\Database2class\Database;
 
-//include_once '../../src/Database2Class/Database.php';
 
 $a_db = new Database($_POST["serveraddress"], $_POST["serverusername"], $_POST["serverpassword"]);
 

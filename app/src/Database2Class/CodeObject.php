@@ -230,7 +230,7 @@ class CodeObject
 
     function indent($level, $pos)
     {
-        if ($level <= 0) return "";
+        if ($level <= 0) return 0;
         $indent = str_repeat($this->indentation_unit, $level);
         $this->code = $this->str_insert($indent, $this->code, $pos);
         return strlen($indent);
